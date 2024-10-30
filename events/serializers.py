@@ -25,13 +25,13 @@ class EventSerializer(serializers.ModelSerializer):
         )
 
 class ReplyEventSerializer(serializers.ModelSerializer):
-    user = UserProfileSerializer(read_only=True)
     event = EventSerializer(read_only=True)
-
+    user = UserProfileSerializer(read_only=True)
+    
     class Meta:
 
         model = Reply
-        
+
         fields = (
             'user',
             'event',

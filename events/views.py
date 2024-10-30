@@ -77,11 +77,11 @@ class EventMyListListAPIView(generics.ListAPIView):
 
 class ReplyEventCreateAPIView(generics.ListCreateAPIView):
     serializer_class = ReplyEventSerializer
-
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
         event = Event.objects.get(id=self.kwargs["id"])
-        qs = Reply.objects.filter(event=event).order_by('-created_at')
+        qs = Reply.objects.filter(event=event)
 
         return qs
 
