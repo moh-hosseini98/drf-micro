@@ -81,7 +81,7 @@ class ReplyEventCreateAPIView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         event = Event.objects.get(id=self.kwargs["id"])
-        qs = Reply.objects.filter(event=event)
+        qs = Reply.objects.filter(event=event).order_by('-created_at')
 
         return qs
 
