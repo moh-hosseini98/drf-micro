@@ -4,7 +4,7 @@ from rest_framework import status,generics,permissions
 
 from .serializers import EventSerializer
 from .models import Event
-from .permissions import IsOwnerOrReadOnly
+from .permissions import IsOrganizerOrReadOnly
 
 
 class EventAPIView(generics.ListCreateAPIView):
@@ -24,16 +24,16 @@ class EventAPIView(generics.ListCreateAPIView):
 
 class RetrieveUpdateDestroyEventAPIView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = EventSerializer
-    permission_classes = [IsOwnerOrReadOnly]
-    lookup_field = "id"
+    permission_classes = [IsOrganizerOrReadOnly]
 
-    def get_queryset(self):
-        return (
+    def get_object(self):
+        obj  = (
             Event.objects.select_related("organizer")
             .prefetch_related("users","likes")
-            .all()
+            .get(id=self.kwargs["id"])
         )
-
+        self.check_object_permissions(self.request,obj)
+        return obj
 
 class JoinEventAPIView(APIView):
 
