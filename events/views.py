@@ -1,13 +1,15 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status,generics
+from rest_framework import status,generics,permissions
 
 from .serializers import EventSerializer
 from .models import Event
+from .permissions import IsOwnerOrReadOnly
 
 
 class EventAPIView(generics.ListCreateAPIView):
     serializer_class = EventSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
         return (
@@ -22,6 +24,7 @@ class EventAPIView(generics.ListCreateAPIView):
 
 class RetrieveUpdateDestroyEventAPIView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = EventSerializer
+    permission_classes = [IsOwnerOrReadOnly]
     lookup_field = "id"
 
     def get_queryset(self):
@@ -30,6 +33,7 @@ class RetrieveUpdateDestroyEventAPIView(generics.RetrieveUpdateDestroyAPIView):
             .prefetch_related("users","likes")
             .all()
         )
+
 
 class JoinEventAPIView(APIView):
 
@@ -55,6 +59,7 @@ class LikeEventAPIView(APIView):
 
     def post(self,request,id):
         event = Event.objects.get(id=id)
+
         if event.likes.filter(id=request.user.profile.id).exists():
             return Response({'msg':'You already liked event!'})
 
