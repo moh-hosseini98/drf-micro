@@ -7,4 +7,5 @@ urlpatterns = [
     path('events/<int:id>/',views.RetrieveUpdateDestroyEventAPIView.as_view()),
     path('events/<int:id>/join/',views.JoinEventAPIView.as_view()),
     path('events/<int:id>/like/',views.LikeEventAPIView.as_view()),
+    path('events/my/',views.EventMyListListAPIView.as_view()),
 ]

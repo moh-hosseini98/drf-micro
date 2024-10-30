@@ -68,4 +68,8 @@ class LikeEventAPIView(APIView):
         return Response({"msg":"You liked Event!"},status=status.HTTP_200_OK)
 
 
+class EventMyListListAPIView(generics.ListAPIView):
+    serializer_class = EventSerializer
 
+    def get_queryset(self):
+        return Event.objects.filter(organizer=self.request.user.profile).all()
