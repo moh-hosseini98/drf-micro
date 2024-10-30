@@ -2,8 +2,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status,generics,permissions
 
-from .serializers import EventSerializer
-from .models import Event
+from .serializers import EventSerializer,ReplyEventSerializer
+from .models import Event,Reply
 from .permissions import IsOrganizerOrReadOnly
 
 
@@ -73,3 +73,21 @@ class EventMyListListAPIView(generics.ListAPIView):
 
     def get_queryset(self):
         return Event.objects.filter(organizer=self.request.user.profile).all()
+    
+
+class ReplyEventCreateAPIView(generics.ListCreateAPIView):
+    serializer_class = ReplyEventSerializer
+
+
+    def get_queryset(self):
+        event = Event.objects.get(id=self.kwargs["id"])
+        qs = Reply.objects.filter(event=event)
+
+        return qs
+
+    def perform_create(self, serializer):
+        event = Event.objects.get(id=self.kwargs["id"])
+        serializer.save(
+            user=self.request.user.profile,
+            event=event
+        )

@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 
-from .models import Event
+from .models import Event,Reply
 from profiles.serializers import UserProfileSerializer
 
 
@@ -24,3 +24,17 @@ class EventSerializer(serializers.ModelSerializer):
             'created_at'
         )
 
+class ReplyEventSerializer(serializers.ModelSerializer):
+    user = UserProfileSerializer(read_only=True)
+    event = EventSerializer(read_only=True)
+
+    class Meta:
+
+        model = Reply
+        
+        fields = (
+            'user',
+            'event',
+            'body',
+            'created_at',
+        )
