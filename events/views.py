@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status,generics,permissions
 
-from .serializers import EventSerializer,ReplyEventSerializer
+from .serializers import EventSerializer,EventDetailSerializer,ReplyEventSerializer
 from .models import Event,Reply
 from .permissions import IsOrganizerOrReadOnly
 
@@ -14,7 +14,6 @@ class EventAPIView(generics.ListCreateAPIView):
     def get_queryset(self):
         return (
             Event.objects.select_related("organizer")
-            .prefetch_related("users","likes")
             .all()
         )
 
@@ -23,7 +22,7 @@ class EventAPIView(generics.ListCreateAPIView):
 
 
 class RetrieveUpdateDestroyEventAPIView(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = EventSerializer
+    serializer_class = EventDetailSerializer
     permission_classes = [IsOrganizerOrReadOnly]
 
     def get_object(self):
@@ -69,7 +68,7 @@ class LikeEventAPIView(APIView):
 
 
 class EventMyListListAPIView(generics.ListAPIView):
-    serializer_class = EventSerializer
+    serializer_class = EventDetailSerializer
 
     def get_queryset(self):
         return Event.objects.filter(organizer=self.request.user.profile).all()
