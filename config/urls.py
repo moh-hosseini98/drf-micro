@@ -20,10 +20,13 @@ from django.conf import settings
 from rest_framework_simplejwt.views import TokenObtainPairView,TokenRefreshView
 
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/',include('users.urls')),
     path('api/v1/',include('profiles.urls')),
     path('api/v1/',include('events.urls')),
     path('api/v1/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+
+   
 ]
